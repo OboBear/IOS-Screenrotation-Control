@@ -7,21 +7,54 @@
 //
 
 #import "ViewController.h"
-
-@interface ViewController ()
-
-@end
+#import "RotateNavigationController.h"
 
 @implementation ViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
+    [self initViews];
 }
 
-- (void)didReceiveMemoryWarning {
-    [super didReceiveMemoryWarning];
-    // Dispose of any resources that can be recreated.
+- (void)initViews {
+    
+    UIButton *button = [[UIButton alloc] initWithFrame:CGRectMake(100, 150, 100, 80)];
+    [button setTitle:@"切换横竖屏" forState:UIControlStateNormal];
+    button.backgroundColor = [UIColor redColor];
+    [button addTarget:self action:@selector(clickToRotate) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview:button];
+}
+
+- (void)clickToRotate {
+    
+    RotateNavigationController *navigationController = (RotateNavigationController *)self.navigationController;
+    //切换rootViewController的旋转方向
+    if (navigationController.interfaceOrientation == UIInterfaceOrientationPortrait) {
+        navigationController.interfaceOrientation = UIInterfaceOrientationLandscapeRight;
+        navigationController.interfaceOrientationMask = UIInterfaceOrientationMaskLandscapeRight;
+        //设置屏幕的转向为横屏
+        [[UIDevice currentDevice] setValue:@(UIDeviceOrientationLandscapeRight) forKey:@"orientation"];
+    }
+    else {
+        navigationController.interfaceOrientation = UIInterfaceOrientationPortrait;
+        navigationController.interfaceOrientationMask = UIInterfaceOrientationMaskPortrait;
+        //设置屏幕的转向为竖屏
+        [[UIDevice currentDevice] setValue:@(UIDeviceOrientationPortrait) forKey:@"orientation"];
+    }
+    //刷新
+    [UIViewController attemptRotationToDeviceOrientation];
+}
+
+- (BOOL)shouldAutorotate {
+    return YES;
+}
+
+- (UIInterfaceOrientationMask)supportedInterfaceOrientations {
+    return UIInterfaceOrientationMaskPortrait ;
+}
+
+- (UIInterfaceOrientation)preferredInterfaceOrientationForPresentation {
+    return UIInterfaceOrientationPortrait;
 }
 
 @end
